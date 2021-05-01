@@ -1,4 +1,3 @@
-const { EventManager } = require('@angular/platform-browser');
 const express = require('express');
 const Event = require('../model/event');
 const checkAuth = require('../middleware/check-auth');
