@@ -208,9 +208,6 @@ licenses; we recommend you read them, as their terms may differ from the
 terms above.
 
 
-ng-audio-recorder
-MIT
-
 rxjs
 Apache-2.0
                                Apache License
