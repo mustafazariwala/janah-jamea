@@ -1,10 +1,34 @@
 const mongoose = require('mongoose');
 const userSchema = mongoose.Schema({
-    email: {type: String, unique: true},
+    branch: {type: String},
+    darajah: {type: Number},
+    accesslevel: {
+        code: { type: Number, default: 1},
+        darajah : { type: Number }
+    },
     its: {type: Number, unique: true},
-    password: {type: String},
-    class: {type: Number},
-    dateJoined: {type: Date, default: Date.now()}
+    trno: {type: Number, unique: true},
+    name: {type: String},
+    nameAR: {type: String},
+    age: {type: Number},
+    mobile: {type: Number},
+    email: {type: String, unique: true},
+    password: {type: String, default: '12345'},
+    gender: {type: String},
+    hizb: {type: String},
+    watan: {type : String},
+    muqaam: {type: String},
+    participation: [
+        {
+            eventName: {type: String},
+            eventId: {type: mongoose.ObjectId},
+            fileUrl: {type: String},
+            isChecked: {type: Boolean},
+            ratings: {type: Number},
+            comments: {type: String}
+        }
+    ]
+
 })
 
 module.exports = mongoose.model('User', userSchema)
