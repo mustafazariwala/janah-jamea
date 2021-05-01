@@ -1,7 +1,0 @@
-
-
-at^modimei=imei
-
-at^zreset
-
-at^zsoftreset
