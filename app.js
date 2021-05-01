@@ -9,14 +9,13 @@ const mongoose = require("mongoose");
 const userRoutes = require('./routes/users')
 const uploadRoutes = require('./routes/uploads')
 const eventsRoutes = require('./routes/events')
-
 require('dotenv').config()
 
 
 const app = express();
-app.use(cors())
+// app.use(cors())
 // app.use(enforce.HTTPS({ trustProtoHeader: true }))
-app.use(compression())
+// app.use(compression())
 
 mongoose
   .connect(
