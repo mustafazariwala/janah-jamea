@@ -6,7 +6,6 @@ const multer = require('multer');
 const path = require('path');
 const User = require('../model/user');
 const taskParticipation = require('../model/task-participation');
-const { resolveForwardRef } = require('@angular/core');
 // const event = require('../model/task');
 
 
