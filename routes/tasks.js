@@ -14,7 +14,7 @@ const router = express.Router();
 
 var taskStorage = multer.diskStorage({
     destination: (req, file, cb) => {
-      cb(null, 'uploads', 'task')
+      cb(null, 'uploads')
     },
     filename: function (req, file, cb) {
       cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
@@ -158,8 +158,20 @@ router.post('/saveaudio', multer({storage: taskStorage}).single("file"),(req,res
     // })
 
     // console.log(req.file)
+})
+router.get('/gettaskslist', (req,res)=> {
+    console.log('Hi')
+    Task.find({}, 'title catagory language').then(result => {
+        res.status(200).send(result)
+    })
+})
 
-   
+router.post('/getparticipatedtask', (req,res)=> {
+    taskParticipation.find(req.body).then(result => {
+        res.status(200).send(result)
+    }).catch(error => {
+        res.status(400).send(error)
+    })
 })
 
 let TaskParticipation = new taskParticipation({
@@ -194,14 +206,14 @@ let data = {
 //         })
 //     })
 
-taskParticipation.find({taskId: data.taskId, participantId: data.participantId}, 'taskId').then(result => {
-    if(result.length != 0){
-        return console.log('The user has already participated')
-    }
+// taskParticipation.find({taskId: data.taskId, participantId: data.participantId}, 'taskId').then(result => {
+//     if(result.length != 0){
+//         return console.log('The user has already participated')
+//     }
     
-    console.log("The User has sucessfully participated")
-    TaskParticipation.save()
-})
+//     console.log("The User has sucessfully participated")
+//     TaskParticipation.save()
+// })
 
 
 module.exports = router
