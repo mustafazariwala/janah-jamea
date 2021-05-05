@@ -9,6 +9,8 @@ const mongoose = require("mongoose");
 const userRoutes = require('./routes/users')
 const uploadRoutes = require('./routes/uploads')
 const eventsRoutes = require('./routes/events')
+const taskRoutes = require('./routes/tasks')
+
 require('dotenv').config()
 
 
@@ -54,6 +56,7 @@ app.use((req, res, next) => {
 app.use("/api/user",userRoutes);
 app.use("/api/upload",uploadRoutes);
 app.use("/api/event",eventsRoutes);
+app.use("/api/task",taskRoutes);
 app.use((req,res,next)=> {
   res.sendFile(path.join(__dirname ,"angular", "index.html"))
 })

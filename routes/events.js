@@ -18,8 +18,6 @@ var storage = multer.diskStorage({
     }
   })
    
-var upload = multer({ storage: storage })
-
 
 router.get('/getevents', checkAuth,(req,res)=> {
     Event.find({}).then(result => {

@@ -18,16 +18,16 @@ const userSchema = mongoose.Schema({
     hizb: {type: String},
     watan: {type : String},
     muqaam: {type: String},
-    participation: [
-        {
-            eventName: {type: String},
-            eventId: {type: mongoose.ObjectId},
-            fileUrl: {type: String},
-            isChecked: {type: Boolean},
-            ratings: {type: Number},
-            comments: {type: String}
-        }
-    ]
+    // eventParticipation: [
+    //     {
+    //         eventName: {type: String},
+    //         eventId: {type: mongoose.ObjectId},
+    //         fileUrl: {type: String},
+    //         isChecked: {type: Boolean},
+    //         ratings: {type: Number},
+    //         comments: {type: String}
+    //     }
+    // ]
 
 })
 

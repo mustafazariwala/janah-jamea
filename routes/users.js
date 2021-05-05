@@ -78,9 +78,9 @@ router.get('/profile/:its', (req,res)=> {
     })
 })
 
-router.get('/allusers', (req,res)=> {
-    console.log('All users')
-    User.find({}, (err, result)=> {
+router.post('/allusers', (req,res)=> {
+    console.log(req.body)
+    User.find(req.body, (err, result)=> {
         console.log(result)
         res.status(200).send({
             message: 'All users data',
@@ -106,12 +106,33 @@ var data = [
       "watan": "karachi",
       "muqaam": "karachi",
       "password": "12345",
-      "participation": [],
       "accesslevel": {
           "code": '',
           "darajah": 1
-      }
+      },
+      
     },
+
+    {
+        "branch": "Karachi",
+        "darajah": 11,
+        "its": 40492254,
+        "trno": 12109,
+        "name": "Mulla Mustafa Hussain Zariwala",
+        "nameAR": "ام ايمن بائي حسين بهائي رتلام والا",
+        "age": 16,
+        "mobile": 923462000000,
+        "email": "cybercomputer786@gmail.com",
+        "gender": "F",
+        "hizb": "ورد",
+        "watan": "karachi",
+        "muqaam": "karachi",
+        "password": "12345",
+        "accesslevel": {
+            "code": '',
+            "darajah": 1
+        },
+      },
     // {
     //   "Branch": "Karachi",
     //   "Darajah": 1,
