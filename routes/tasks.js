@@ -167,10 +167,30 @@ router.get('/gettaskslist', (req,res)=> {
 })
 
 router.post('/getparticipatedtask', (req,res)=> {
-    taskParticipation.find(req.body).then(result => {
-        res.status(200).send(result)
-    }).catch(error => {
-        res.status(400).send(error)
+    
+    Promise.all([
+        taskParticipation.find({taskId: req.body.taskId,'ratings.ratingBy':  req.body.ratingBy}).exec(),
+        taskParticipation.find({taskId: req.body.taskId, 'ratings.ratingBy': { "$ne":  req.body.ratingBy}}).exec()
+    ]).then(results => {
+        res.status(200).send(results)
+    })
+
+   
+})
+
+router.post('/getratetask', (req,res)=> {
+
+    taskParticipation.find({_id: req.body.id ,'ratings.ratingBy':  req.body.ratings.ratingBy}).then(result => {
+        if(result.length != 0){
+            console.log('User cannot rate')
+            return res.status(400).send({message: 'User cannot rate'})
+        }
+        taskParticipation.findOneAndUpdate({_id: req.body.id}, {$push: {'ratings': req.body.ratings}}).then(result => {
+            console.log('User has Successfully rated')
+            res.status(200).send({message: 'User has Successfully rated'})
+
+        })
+        // TaskParticipation.save()
     })
 })
 
@@ -184,11 +204,58 @@ let TaskParticipation = new taskParticipation({
 
 
 let data = {
-    taskId: '6091b56041afed2354173d43',
-    participantId: '609183f928f48b52a0d4860e',
+    taskId: '6091b56041afed2354173d44', // Overseas
+    participantId: '609183f928f48b52a0d4860b', // Ummeaiman
+    taskParticipationId: '609312e6f7aae826ec03a350', // Task Participation ID
     datePerformed: new Date(),
-    
+    ratings: {
+        stars: 4,
+        comments: 'Its soo Good',
+        ratingBy:  '609183f928f48b52a0d4860c'
+    }
 }
+
+// // Find which one are already rated 
+// taskParticipation.find({'ratings.ratingBy':  data.participantId}).then(result => {
+//     console.log('Have Value')
+//     console.log(result)
+// });
+
+// // Find which one are not rated 
+// taskParticipation.find({'ratings.ratingBy': { "$ne":  data.participantId}}).then(result => {
+//     console.log('Does not have value')
+//     console.log(result)
+// })
+
+// Promise.all([
+//     taskParticipation.find({'ratings.ratingBy':  data.participantId}).exec(),
+//     taskParticipation.find({'ratings.ratingBy': { "$ne":  data.participantId}}).exec()
+// ]).then(results => {
+//     console.log('Have Value', results[0])
+//     console.log('Does not Have Value', results[1])
+// })
+
+// Add Ratings 
+
+// taskParticipation.findOneAndUpdate({_id: data.taskParticipationId}, {$push: {'ratings': data.ratings}}).then(result => {
+//     console.log(result)
+// })
+
+
+// taskParticipation.find({_id: data.taskParticipationId,'ratings.ratingBy':  data.ratings.ratingBy}).then(result => {
+//     if(result.length != 0){
+//         // return res.status(400).send({message: 'User Cannot participate'})
+//         return console.log('User cannot rate')
+//     }
+//     taskParticipation.findOneAndUpdate({_id: data.taskParticipationId}, {$push: {'ratings': data.ratings}}).then(result => {
+//         console.log('User has Successfully rated')
+//     })
+//     // res.status(200).send({message: 'User has Successfully participated'})
+//     // TaskParticipation.save()
+// })
+
+// Task.findOneAndUpdate({'_id': data.taskId}, {$push : {participants: {participantsId: data.participantsId}}})
+// .then(result => res.send(result)).catch(error => res.send(error))
 
 
 // taskParticipation.findOneAndUpdate({taskId: data.taskId, participantId: data.participantId}, data, {upsert: true})
