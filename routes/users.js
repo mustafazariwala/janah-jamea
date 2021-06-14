@@ -36,7 +36,7 @@ function verifyToken(req,res,next){
 router.post('/login', (req,res)=> {
     let userData = req.body;
     console.log(userData)
-    User.findOne({its: userData.its}, (err, user) => {
+    User.findOne({its: userData.its},(err, user) => {
         console.log(user)
         if (err){
             console.log(err)
@@ -63,7 +63,8 @@ router.post('/login', (req,res)=> {
                     message: 'Authenticated Successfully',
                     token: token,
                     id: user._id,
-                    its: user.its
+                    its: user.its,
+                    accesslevel: user.accesslevel
                 })
             }
         }
@@ -79,8 +80,11 @@ router.get('/profile/:its', (req,res)=> {
 })
 
 router.post('/allusers', (req,res)=> {
+    if(req.body.name){
+        req.body.name = {'$regex' : req.body.name, '$options' : 'i'}
+    }
     console.log(req.body)
-    User.find(req.body, (err, result)=> {
+    User.find(req.body, 'name email its trno age', (err, result)=> {
         console.log(result)
         res.status(200).send({
             message: 'All users data',
@@ -149,6 +153,14 @@ var data = [
   ]
 
 //   User.insertMany(data)
+// var data = { name: 'sds' }
+
+
+
+// User.find({watan: {'$regex' : 'karachi', '$options' : 'i'}}, (err, result)=> {
+//     console.log('Result ' + result)
+//     // console.log
+// })
 
 
 module.exports = router

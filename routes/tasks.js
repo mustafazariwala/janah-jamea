@@ -160,7 +160,6 @@ router.post('/saveaudio', multer({storage: taskStorage}).single("file"),(req,res
     // console.log(req.file)
 })
 router.get('/gettaskslist', (req,res)=> {
-    console.log('Hi')
     Task.find({}, 'title catagory language').then(result => {
         res.status(200).send(result)
     })
@@ -169,8 +168,19 @@ router.get('/gettaskslist', (req,res)=> {
 router.post('/getparticipatedtask', (req,res)=> {
     
     Promise.all([
-        taskParticipation.find({taskId: req.body.taskId,'ratings.ratingBy':  req.body.ratingBy}).exec(),
-        taskParticipation.find({taskId: req.body.taskId, 'ratings.ratingBy': { "$ne":  req.body.ratingBy}}).exec()
+        // Already Rated the task
+
+        taskParticipation.find(
+            {taskId: req.body.taskId,'ratings.ratingBy':  req.body.ratingBy},
+            { 'ratings.$': 1, 'fileUrl': 1}
+        )
+        .exec(),
+
+        // Have not Rated the task 
+        taskParticipation.find(
+            {taskId: req.body.taskId, 'ratings.ratingBy': { "$ne":  req.body.ratingBy}},
+            { 'ratings.ratingBy': req.body.ratingBy }
+        ).exec()
     ]).then(results => {
         res.status(200).send(results)
     })
