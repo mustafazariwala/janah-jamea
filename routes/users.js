@@ -1,6 +1,7 @@
 const express = require('express');
 const User = require('../model/user');
 var jwt = require('jsonwebtoken');
+// const user = require('../model/user');
 require('dotenv').config()
 
 
@@ -73,8 +74,8 @@ router.post('/login', (req,res)=> {
 
 // Fetch Data for Profile 
 
-router.get('/profile/:its', (req,res)=> {
-    User.findOne({its: req.params.its}, (err, user) => {
+router.get('/profile/:id', (req,res)=> {
+    User.findOne({_id: req.params.id}, (err, user) => {
         res.status(200).send(user)
     })
 })
@@ -90,6 +91,25 @@ router.post('/allusers', (req,res)=> {
             message: 'All users data',
             result: result
         })
+    })
+})
+
+router.post('/getemailid', (req,res)=> {
+    console.log(req.body)
+    User.findOne({'its': req.body.its, 'trno': req.body.trno}, '-_id email').then(result => {
+        if(!result){
+            return res.status(400).send({message: 'An Unknown Error Occurred'})
+        }
+        res.status(200).send(result)
+    })
+})
+
+router.post('/updatepassword', (req,res)=> {
+    User.updateOne({'its': req.body.its}, {'password': req.body.password}).then(result => {
+        if(result.n == 0){
+            return res.status(400).send({message: 'An Unknown Error Occurred'})
+        }
+        res.status(200).send({message: 'Password has been Changed'})
     })
 })
 

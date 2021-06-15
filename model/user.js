@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const userSchema = mongoose.Schema({
     branch: {type: String},
     darajah: {type: Number},
+    description: {type: String},
     accesslevel: [
         
     ],
@@ -11,7 +12,7 @@ const userSchema = mongoose.Schema({
     nameAR: {type: String},
     age: {type: Number},
     mobile: {type: Number},
-    email: {type: String, unique: true},
+    email: {type: String},
     password: {type: String, default: '12345'},
     gender: {type: String},
     hizb: {type: String},
