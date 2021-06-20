@@ -165,6 +165,20 @@ router.post('/evaluation/getevaluate', (req,res)=> {
     })
 })
 
+router.get('/evaluation/getDate', (req,res)=> {
+    Event.find({}, 'title dateAdded dateExpiry').then(result => {
+        let output = result.map( element => { 
+            return {
+                id: element._id,
+                title: element.title,
+                start: element.dateAdded,
+                end: element.dateExpiry
+            }
+        })
+        res.status(200).send(output)
+    })
+})
+
 
 idArray = ['60afdf13bc2cc156ccfd1a21', '60ae4a0395889b18e88c3cdd']
 id = '60ae4a0395889b18e88c3cdd'

@@ -179,9 +179,10 @@ router.post('/getparticipatedtask', (req,res)=> {
         // Have not Rated the task 
         taskParticipation.find(
             {taskId: req.body.taskId, 'ratings.ratingBy': { "$ne":  req.body.ratingBy}},
-            { 'ratings.ratingBy': req.body.ratingBy }
+            { 'ratings.ratingBy': req.body.ratingBy, 'fileUrl': 1 }
         ).exec()
     ]).then(results => {
+        console.log(results[0])
         res.status(200).send(results)
     })
 
