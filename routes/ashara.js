@@ -22,7 +22,7 @@ router.post('/ohbat-video/add', (req,res)=> {
 
 
 router.get('/ohbat-video/getAll', (req,res)=> {
-    ohbatVideo.find({}).then(result => {
+    ohbatVideo.find({}).sort({engDate: -1}).then(result => {
         res.status(200).send(result)
     })
 })
