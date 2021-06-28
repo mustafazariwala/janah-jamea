@@ -10,6 +10,7 @@ const userRoutes = require('./routes/users')
 const uploadRoutes = require('./routes/uploads')
 const eventsRoutes = require('./routes/events')
 const taskRoutes = require('./routes/tasks')
+const asharaRoutes = require('./routes/ashara')
 
 require('dotenv').config()
 
@@ -61,6 +62,7 @@ app.use("/api/user",userRoutes);
 app.use("/api/upload",uploadRoutes);
 app.use("/api/event",eventsRoutes);
 app.use("/api/task",taskRoutes);
+app.use("/api/ashara",asharaRoutes);
 app.use((req,res,next)=> {
   res.sendFile(path.join(__dirname ,"angular", "index.html"))
 })
