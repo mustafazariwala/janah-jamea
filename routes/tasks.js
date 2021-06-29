@@ -166,23 +166,35 @@ router.get('/gettaskslist', (req,res)=> {
 })
 
 router.post('/getparticipatedtask', (req,res)=> {
+    let male = false;
+    User.findOne({_id: req.body.ratingBy}, 'gender accesslevel').then(result => {
+        let adminAccess = result.accesslevel.includes('root')
+        if(result.gender == 'M' && !adminAccess){
+            male = true;
+        }
+    })
     
     Promise.all([
         // Already Rated the task
 
         taskParticipation.find(
             {taskId: req.body.taskId,'ratings.ratingBy':  req.body.ratingBy},
-            { 'ratings.$': 1, 'fileUrl': 1}
+            { 'ratings.$': 1, 'fileUrl': 1, 'participantId': 1}
         )
+        .populate('participantId', 'name gender')
         .exec(),
 
         // Have not Rated the task 
         taskParticipation.find(
             {taskId: req.body.taskId, 'ratings.ratingBy': { "$ne":  req.body.ratingBy}},
-            { 'ratings.ratingBy': req.body.ratingBy, 'fileUrl': 1 }
-        ).exec()
+            { 'ratings.ratingBy': req.body.ratingBy, 'fileUrl': 1, 'participantId': 1 }
+        )
+        .populate('participantId', 'name gender')
+        .exec()
     ]).then(results => {
-        console.log(results[0])
+        if(male){
+            results[1] = results[1].filter(element => element.participantId.gender ==  'M')
+        }
         res.status(200).send(results)
     })
 
