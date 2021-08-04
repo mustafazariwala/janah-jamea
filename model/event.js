@@ -3,12 +3,20 @@ const eventSchema = mongoose.Schema({
     title: {type: String, required: true},
     tagline: {type: String, required: true},
     catagory: {type: String, required: true},
+    type: {
+      audio: {type: Boolean},
+      registration:  {type: Boolean},
+    },
     branch: {
        all: { type: String, required: true },
        karachi: { type: String, required: true },
        surat: { type: String, required: true },
        nairobi: { type: String, required: true },
        marol: { type: String, required: true }
+    },
+    gender: {
+       male: {type: Boolean},
+       female: {type: Boolean}
     },
     darajah: {
        1: {type: Number, required: true},
@@ -25,7 +33,7 @@ const eventSchema = mongoose.Schema({
        12: {type: Number, required: true},
     },
     description: {type: String, required: true},
-    dateAdded: {type: Date, default: new Date()},
+    dateAdded: {type: Date},
     dateExpiry: {type: Date},
     totalmarks: {type: Number},
     rubrics: [

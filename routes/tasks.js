@@ -134,11 +134,16 @@ router.post('/saveaudio', multer({storage: taskStorage}).single("file"),(req,res
     
     taskParticipation.find({taskId: req.body.taskId, participantId: req.body.userId}, 'taskId').then(result => {
         if(result.length != 0){
-            return res.status(400).send({message: 'User Cannot participate'})
+            return res.status(400).send({message: 'User has already participated and Cannot participate multiple times.'})
         }
         
         res.status(200).send({message: 'User has Successfully participated'})
         TaskParticipation.save()
+    }, err => {
+        res.status(400).send({
+            message: 'User cannot participate. Contact admin for furthur instructions',
+            err: err
+        })
     })
 
     // taskParticipation.insertMany(data)
@@ -214,6 +219,27 @@ router.post('/getratetask', (req,res)=> {
 
         })
         // TaskParticipation.save()
+    })
+});
+
+router.post('/admin/participatedTaskList', (req,res)=> {
+    console.log(req.body)
+    taskParticipation.find({taskId: req.body.taskId}, 'participantId fileUrl').populate('participantId', 'name its darajah trno').then(result => {
+        res.status(200).send(result)
+    })
+})
+
+router.post('/admin/removeParticipantSearch', (req,res) => {
+
+    taskParticipation.deleteOne({_id: req.body.id}).then(result => {
+        if(result.n >= 1 ){
+            return res.status(200).send({
+                message: 'The data has been deleted'
+            })
+        }
+        res.status(400).send({
+            message: 'Error Occurred.'
+        })
     })
 })
 

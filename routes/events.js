@@ -21,10 +21,23 @@ var storage = multer.diskStorage({
   })
    
 
-router.get('/getevents', checkAuth,(req,res)=> {
-    Event.find({}).then(result => {
-        res.status(200).send(result)
+router.post('/getevents', checkAuth,(req,res)=> {
+    let male = false;
+    user.findOne({_id: req.body.id}, 'gender accesslevel').then(result => {
+        let adminAccess = result.accesslevel.includes('root')
+        if(result.gender == 'M' && !adminAccess){
+            male = true;
+        }
+        console.log(male)
+        Event.find({}).then(result => {
+            if(male){
+                result = result.filter(element => element.gender.male ==  true)
+                console.log(result)
+            }
+            res.status(200).send(result)
+        })
     })
+    
 })
 
 router.post('/addevent', (req,res)=> {
@@ -118,7 +131,7 @@ router.post('/assignevaluator', (req,res)=> {
             })
         })
     })
-})
+});
 
 
 
@@ -165,24 +178,66 @@ router.post('/evaluation/getevaluate', (req,res)=> {
     })
 })
 
-router.get('/evaluation/getDate', (req,res)=> {
-    Event.find({}, 'title dateAdded dateExpiry').then(result => {
-        let output = result.map( element => { 
-            return {
-                id: element._id,
-                title: element.title,
-                start: element.dateAdded,
-                end: element.dateExpiry
+router.post('/evaluation/getDate', (req,res)=> {
+    let male = false;
+    user.findOne({_id: req.body.id}, 'gender accesslevel').then(result => {
+        let adminAccess = result.accesslevel.includes('root')
+        if(result.gender == 'M' && !adminAccess){
+            male = true;
+        }
+        console.log(male)
+
+        Event.find({}, 'title dateAdded dateExpiry gender').then(result => {
+            if(male){
+                result = result.filter(element => element.gender.male ==  true)
             }
+            let output = result.map( element => { 
+                return {
+                    id: element._id,
+                    title: element.title,
+                    start: element.dateAdded,
+                    end: element.dateExpiry
+                }
+            })
+            res.status(200).send(output)
         })
-        res.status(200).send(output)
     })
 })
 
+var data = [{
+    assessment : {
+        isAssigned : false
+    },
+    datePerformed : "2021-07-09T00:48:40.261Z",
+    eventId: "60d2f0104d15d891f3a7f960",
+    participantId : "60c852faafa1fc2cd00a175d",
+    fileUrl: "file-1625803245794.mp3",
+    rubrics : [],
+    type: {
+        registration: true,
+        audio: false
+    }
+}]
 
-idArray = ['60afdf13bc2cc156ccfd1a21', '60ae4a0395889b18e88c3cdd']
-id = '60ae4a0395889b18e88c3cdd'
-
+// let eventParticipationSave = new EventParticipation(
+//     {
+//         assessment : {
+//             isAssigned : false
+//         },
+//         datePerformed : "2021-07-09T00:48:40.261Z",
+//         eventId: "60d2f0104d15d891f3a7f960",
+//         participantId : "60c852faafa1fc2cd00a175d",
+//         fileUrl: "file-1625803245794.mp3",
+//         rubrics : [],
+//         type: {
+//             registration: true,
+//             audio: false
+//         }
+//     }
+// )
+// eventParticipationSave.save().then(result => {
+//     console.log(result)
+// })
 
 
 

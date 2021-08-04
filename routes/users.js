@@ -97,6 +97,7 @@ router.post('/allusers', (req,res)=> {
 router.post('/getemailid', (req,res)=> {
     console.log(req.body)
     User.findOne({'its': req.body.its, 'trno': req.body.trno}, '-_id email').then(result => {
+        console.log(result)
         if(!result){
             return res.status(400).send({message: 'An Unknown Error Occurred'})
         }
@@ -114,66 +115,8 @@ router.post('/updatepassword', (req,res)=> {
 })
 
 
-var data = [
-    {
-      "branch": "Karachi",
-      "darajah": 1,
-      "its": 50493009,
-      "trno": 26899,
-      "name": "Ummeayman bai Husain bhai Ratlam wala",
-      "nameAR": "ام ايمن بائي حسين بهائي رتلام والا",
-      "age": 16,
-      "mobile": 923462000000,
-      "email": "cybercomputer786@gmail.com",
-      "gender": "F",
-      "hizb": "ورد",
-      "watan": "karachi",
-      "muqaam": "karachi",
-      "password": "12345",
-      "accesslevel": {
-          "code": '',
-          "darajah": 1
-      },
-      
-    },
-
-    {
-        "branch": "Karachi",
-        "darajah": 11,
-        "its": 40492254,
-        "trno": 12109,
-        "name": "Mulla Mustafa Hussain Zariwala",
-        "nameAR": "ام ايمن بائي حسين بهائي رتلام والا",
-        "age": 16,
-        "mobile": 923462000000,
-        "email": "cybercomputer786@gmail.com",
-        "gender": "F",
-        "hizb": "ورد",
-        "watan": "karachi",
-        "muqaam": "karachi",
-        "password": "12345",
-        "accesslevel": {
-            "code": '',
-            "darajah": 1
-        },
-      },
-    // {
-    //   "Branch": "Karachi",
-    //   "Darajah": 1,
-    //   "ITSID": 40472246,
-    //   "TRNO": 26762,
-    //   "Name": "Zainab bai Mustansir bhai Colombowala",
-    //   "NameAR": "زينب بائي مستنصر بهائي كولمبو والا",
-    //   "Age": 14,
-    //   "Mobile": 923334000000,
-    //   "Email": "mustansir.colombo@gmail.com",
-    //   "Gender": "F",
-    //   "Hizb": "ياسمين"
-    // }
-  ]
-
-//   User.insertMany(data)
-// var data = { name: 'sds' }
+// var data = []
+//   User.insertMany(data).then(result => console.log(result))
 
 
 

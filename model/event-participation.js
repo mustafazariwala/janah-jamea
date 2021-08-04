@@ -3,8 +3,12 @@ const eventParticipationSchema = mongoose.Schema({
     participantId: {type: mongoose.ObjectId, ref: 'User'},
     eventId: {type: mongoose.ObjectId, ref: 'Task'},
     datePerformed: {type: Date, default: new Date()},
-    fileUrl: {type: String, required: true},
+    fileUrl: {type: String},
     totalMarks: {type: Number},
+    type: {
+        registration: {type: Boolean},
+        audio: {type: Boolean}
+    },
     assessment: {
         isAssigned: {type: Boolean, default: false},
         date: {type: Date},
