@@ -2,6 +2,9 @@ const express = require('express');
 const User = require('../model/user');
 var jwt = require('jsonwebtoken');
 // const user = require('../model/user');
+const EventParticipation = require('../model/event-participation');
+const TaskParticipation = require('../model/task-participation');
+
 require('dotenv').config()
 
 
@@ -75,9 +78,13 @@ router.post('/login', (req,res)=> {
 // Fetch Data for Profile 
 
 router.get('/profile/:id', (req,res)=> {
-    User.findOne({_id: req.params.id}, (err, user) => {
-        res.status(200).send(user)
+    Promise.all([
+        User.findOne({_id: req.params.id}).exec(),
+        EventParticipation.find({participantId: req.params.id}).populate('eventId', 'title').exec()
+    ]).then(result => {
+        res.status(200).send(result)
     })
+    
 })
 
 router.post('/allusers', (req,res)=> {

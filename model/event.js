@@ -6,6 +6,7 @@ const eventSchema = mongoose.Schema({
     type: {
       audio: {type: Boolean},
       registration:  {type: Boolean},
+      test:  {type: Boolean},
     },
     branch: {
        all: { type: String, required: true },
@@ -19,18 +20,18 @@ const eventSchema = mongoose.Schema({
        female: {type: Boolean}
     },
     darajah: {
-       1: {type: Number, required: true},
-       2: {type: Number, required: true},
-       3: {type: Number, required: true},
-       4: {type: Number, required: true},
-       5: {type: Number, required: true},
-       6: {type: Number, required: true},
-       7: {type: Number, required: true},
-       8: {type: Number, required: true},
-       9: {type: Number, required: true},
-       10: {type: Number, required: true},
-       11: {type: Number, required: true},
-       12: {type: Number, required: true},
+       1: {type: Boolean, required: true},
+       2: {type: Boolean, required: true},
+       3: {type: Boolean, required: true},
+       4: {type: Boolean, required: true},
+       5: {type: Boolean, required: true},
+       6: {type: Boolean, required: true},
+       7: {type: Boolean, required: true},
+       8: {type: Boolean, required: true},
+       9: {type: Boolean, required: true},
+       10: {type: Boolean, required: true},
+       11: {type: Boolean, required: true},
+       12: {type: Boolean, required: true},
     },
     description: {type: String, required: true},
     dateAdded: {type: Date},
@@ -39,7 +40,7 @@ const eventSchema = mongoose.Schema({
     rubrics: [
        {
           description: {type: String},
-          totalMarks: {type: Number},
+          marks: {type: Number},
           _id: false,
        }
     ],

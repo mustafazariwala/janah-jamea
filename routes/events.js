@@ -23,16 +23,21 @@ var storage = multer.diskStorage({
 
 router.post('/getevents', checkAuth,(req,res)=> {
     let male = false;
-    user.findOne({_id: req.body.id}, 'gender accesslevel').then(result => {
+    user.findOne({_id: req.body.id}, 'gender accesslevel darajah').then(result => {
         let adminAccess = result.accesslevel.includes('root')
         if(result.gender == 'M' && !adminAccess){
             male = true;
         }
-        console.log(male)
-        Event.find({}).then(result => {
+        query = {}
+        if(!adminAccess){
+            class1 = `darajah.${result.darajah}`
+            query[class1] = true
+        }
+        Event.find(query).then(result => {
+            console.log(result)
             if(male){
                 result = result.filter(element => element.gender.male ==  true)
-                console.log(result)
+                // console.log(result)
             }
             res.status(200).send(result)
         })
@@ -62,6 +67,35 @@ router.get('/getevent/:id', (req,res)=> {
             data: result
         })
     })
+})
+
+router.post('/deleteevent', (req,res)=> {
+    console.log(req.body)
+    Event.deleteOne({_id: req.body.id}).then(result => {
+        res.status(200).send({
+            message: 'Event Deleted',
+            result: result
+        })
+    }).catch(error => {
+        res.status(400).send({
+            message: 'Event Not Deleted'
+        })
+    })
+})
+
+router.post('/updateevent/:id', (req,res)=> {
+    console.log('Update event')
+    Event.updateOne({_id: req.params.id}, req.body).then(result => {
+        res.status(200).send({
+            message: 'Event Updated',
+            result: result
+        })
+    }).catch(error => {
+        res.status(400).send({
+            message: 'Event Not Updated'
+        })
+    })
+    // Event.findByIdAndUpdate()
 })
 
 router.post('/saveaudio', multer({storage: storage}).single("file"),(req,res)=> {
@@ -98,7 +132,7 @@ router.post('/saveaudio', multer({storage: storage}).single("file"),(req,res)=> 
 })
 
 router.post('/searcheventparticipation', (req,res)=> {
-    console.log(req.body)
+    // console.log(req.body)
     Promise.all([    
         EventParticipation.find({eventId: req.body.eventId, 'assessment.isAssigned': false}, 'participantId assessment').populate('participantId', 'name trno its age email').exec(),
         EventParticipation.find({eventId: req.body.eventId, 'assessment.isAssigned': true}, 'participantId assessment').populate('participantId assessment.checkedBy', 'name trno its age email').exec()
@@ -116,17 +150,17 @@ router.post('/assignevaluator', (req,res)=> {
         },
     }
     EventParticipation.updateMany({_id: { $in: req.body.participantId}}, payload, { upsert: true }).then(result => {
-        console.log(result)
+        // console.log(result)
         res.status(200).send({
             message: result.n + ' has been assigned'
         })
         user.find({'_id': req.body.assessment.checkedBy, accesslevel: 'evaluation'}).then(result => {
             if (result.length) {
-                console.log(result.length)
+                // console.log(result.length)
                 return
             }
             user.updateOne({'_id' : req.body.assessment.checkedBy}, {$push:  {'accesslevel': 'evaluation'}}).then(result => {
-                console.log('Updated')
+                // console.log('Updated')
         
             })
         })
@@ -159,7 +193,7 @@ router.get('/geteventslist', (req,res)=> {
 })
 
 router.post('/evaluation/getparticipants', (req,res)=> {
-    console.log(req.body)
+    // console.log(req.body)
     EventParticipation.find({eventId: req.body.eventId, 'assessment.isAssigned': true, 'assessment.checkedBy': req.body.evaluatorId, 'rubrics.0': { "$exists": false}}, 'participantId fileUrl')
     .populate('participantId', 'name its').then( result => {
         res.status(200).send(result)
@@ -167,7 +201,7 @@ router.post('/evaluation/getparticipants', (req,res)=> {
 })
 
 router.post('/evaluation/getevaluate', (req,res)=> {
-    console.log(req.body)
+    // console.log(req.body)
     EventParticipation.updateOne({_id: req.body.id}, {'rubrics': req.body.rubrics}).then(result => {
         console.log('Evaluation Done', result)
         if(!result){
@@ -180,14 +214,18 @@ router.post('/evaluation/getevaluate', (req,res)=> {
 
 router.post('/evaluation/getDate', (req,res)=> {
     let male = false;
-    user.findOne({_id: req.body.id}, 'gender accesslevel').then(result => {
+    user.findOne({_id: req.body.id}, 'gender accesslevel darajah').then(result => {
         let adminAccess = result.accesslevel.includes('root')
         if(result.gender == 'M' && !adminAccess){
             male = true;
         }
-        console.log(male)
-
-        Event.find({}, 'title dateAdded dateExpiry gender').then(result => {
+        query = {}
+        if(!adminAccess){
+            class1 = `darajah.${result.darajah}`
+            query[class1] = true
+        }
+        Event.find(query, 'title dateAdded dateExpiry gender').then(result => {
+            // console.log(result)
             if(male){
                 result = result.filter(element => element.gender.male ==  true)
             }
@@ -195,11 +233,38 @@ router.post('/evaluation/getDate', (req,res)=> {
                 return {
                     id: element._id,
                     title: element.title,
-                    start: element.dateAdded,
-                    end: element.dateExpiry
+                    date: element.dateAdded,
+                    allDay: true
+                    // end: element.dateAdded.setDate(element.dateAdded.getDate() + 2)
                 }
             })
             res.status(200).send(output)
+        })
+    })
+})
+
+router.get('/getallparticipation/:id', (req,res)=> {
+    EventParticipation.find({eventId: req.params.id}, 'assessment datePerformed participantId fileUrl rubrics' )
+    .populate('assessment.checkedBy', 'name darajah')
+    .populate('participantId', 'name darajah trno')
+    .then(result => {
+        res.status(200).send(result)
+    })
+    .catch(error => {
+        res.status(400).send({
+            message: 'Error fetching Event Participations'
+        })
+    })
+})
+
+router.get('/deleteparticipation/:id', (req,res)=> {
+    EventParticipation.deleteOne({_id: req.params.id})
+    .then(result => {
+        res.status(200).send(result)
+    })
+    .catch(error => {
+        res.status(400).send({
+            message: 'Error Deleting Participation'
         })
     })
 })
@@ -278,7 +343,7 @@ var data = [{
 // EventParticipation.findByIdAndUpdate('60ae48f11bc8e43ab0b485d6', {'rubrics': rubrics}).then(result => {
 //     console.log(result)
 // })
-
+        
 
 
 module.exports = router

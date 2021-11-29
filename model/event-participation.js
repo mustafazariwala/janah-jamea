@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const eventParticipationSchema = mongoose.Schema({
     participantId: {type: mongoose.ObjectId, ref: 'User'},
-    eventId: {type: mongoose.ObjectId, ref: 'Task'},
+    eventId: {type: mongoose.ObjectId, ref: 'Event'},
     datePerformed: {type: Date, default: new Date()},
     fileUrl: {type: String},
     totalMarks: {type: Number},
