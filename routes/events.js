@@ -221,9 +221,16 @@ router.post('/evaluation/getDate', (req,res)=> {
         }
         query = {}
         if(!adminAccess){
+            let gender; 
             class1 = `darajah.${result.darajah}`
+            
             query[class1] = true
+            if(result.gender == 'M'){gender = `gender.male`}
+            if(result.gender == 'F'){gender = `gender.female`}
+            query[gender] = true
         }
+        console.log(result)
+        console.log('Gender', query)
         Event.find(query, 'title dateAdded dateExpiry gender').then(result => {
             // console.log(result)
             if(male){
